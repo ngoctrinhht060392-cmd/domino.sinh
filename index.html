@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOMINO HỌC TẬP</title>
+    <style>
+        :root {
+            --bg-color: #f8fafc; /* Nền trắng sáng */
+            --header-bg: #ffffff;
+            --text-main: #334155; /* Chữ xám đậm */
+            --text-muted: #64748b;
+            --accent: #2563eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            
+            /* Màu pastel: Hồng, Vàng, Xanh nổi bật */
+            --card-1: #fbcfe8; /* Hồng nhạt */
+            --card-2: #fef08a; /* Vàng nhạt */
+            --card-3: #bfdbfe; /* Xanh dương nhạt */
+            --card-4: #f9a8d4; /* Hồng đậm hơn */
+            --card-5: #bae6fd; /* Xanh dương sáng */
+            --card-text: #0f172a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Header & Stats */
+        header {
+            background-color: var(--header-bg);
+            padding: 15px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            z-index: 10;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .stat-item {
+            background: #f1f5f9;
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            color: var(--text-main);
+        }
+
+        .stat-value {
+            font-weight: 700;
+            color: var(--text-main);
+            margin-left: 8px;
+            font-size: 16px;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.btn-warning { background-color: var(--warning); color: #fff;}
+        button.btn-danger { background-color: var(--danger); }
+        button.btn-success { background-color: var(--success); }
+        button.btn-info { background-color: #0ea5e9; color: white; } /* Nút thông tin màu xanh lơ */
+
+        /* Bảng Xếp Hạng */
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
+        .leaderboard-table th, .leaderboard-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+        }
+        
+        .leaderboard-table th {
+            background: #f1f5f9;
+            font-weight: bold;
+            color: #475569;
+            position: sticky;
+            top: 0;
+        }
+        
+        .leaderboard-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Game Areas */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .area-title {
+            font-size: 16px;
+            color: #475569;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chain-area {
+            flex: 0 0 auto;
+            min-height: 120px;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 15px;
+            border: 2px dashed #cbd5e1;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .pool-area {
+            flex: 1;
+            min-height: 250px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: flex-start;
+            gap: 15px;
+        }
+
+        /* Domino Card */
+        .domino {
+            display: flex;
+            align-items: stretch;
+            background-color: var(--card-1);
+            color: var(--card-text);
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+            user-select: none;
+            overflow: hidden;
+            max-width: 400px;
+            min-width: 250px;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            position: relative;
+        }
+
+        .domino:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+        }
+
+        /* Thẻ đã nối vào chuỗi */
+        .chain-area .domino {
+            cursor: default;
+            transform: none !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            animation: slideInUp 0.4s ease forwards;
+            opacity: 0.95;
+        }
+
+        .domino-half {
+            padding: 12px 16px;
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .domino-divider {
+            width: 2px;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent,
+                transparent 4px,
+                rgba(0, 0, 0, 0.1) 4px,
+                rgba(0, 0, 0, 0.1) 8px
+            );
+        }
+
+        /* Pastel Colors Assignment */
+        .color-0 { background-color: var(--card-1); }
+        .color-1 { background-color: var(--card-2); }
+        .color-2 { background-color: var(--card-3); }
+        .color-3 { background-color: var(--card-4); }
+        .color-4 { background-color: var(--card-5); }
+
+        /* Animations */
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .shake {
+            animation: shakeError 0.4s ease-in-out;
+        }
+
+        @keyframes shakeError {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px) rotate(-2deg); background-color: var(--danger); color: white; }
+            40% { transform: translateX(8px) rotate(2deg); background-color: var(--danger); color: white; }
+            60% { transform: translateX(-8px) rotate(-2deg); background-color: var(--danger); color: white; }
+            80% { transform: translateX(8px) rotate(2deg); background-color: var(--danger); color: white; }
+        }
+
+        .hint-pulse {
+            animation: pulseHint 2s infinite;
+            z-index: 5;
+        }
+
+        @keyframes pulseHint {
+            0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); transform: scale(1.05); }
+            70% { box-shadow: 0 0 0 15px rgba(37, 99, 235, 0); transform: scale(1.05); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); transform: scale(1.05); }
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            padding: 12px 25px;
+            border-radius: 30px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast-success { background-color: var(--success); }
+        .toast-error { background-color: var(--danger); }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            backdrop-filter: blur(3px);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 650px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            transform: translateY(-20px) scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal h3 {
+            color: var(--accent);
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        /* Welcome Screen */
+        .welcome-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .welcome-modal {
+            background: #ffffff;
+            padding: 40px 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            animation: slideInUp 0.5s ease forwards;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #475569;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+            color: #0f172a;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+
+        .form-group textarea {
+            height: 220px;
+            resize: vertical;
+            font-family: monospace;
+            line-height: 1.6;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .end-stats {
+            text-align: center;
+            font-size: 18px;
+            line-height: 2;
+            margin-bottom: 25px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .end-stats p {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 20px;
+            border-bottom: 1px dashed #cbd5e1;
+        }
+        
+        .end-stats p:last-child {
+            border-bottom: none;
+        }
+
+        .end-stats span {
+            color: var(--success);
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .error-text {
+            color: var(--danger);
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .domino { max-width: 100%; min-width: 100%; }
+            .stats-container { gap: 8px; }
+            .stat-item { padding: 6px 10px; font-size: 12px; }
+            .stat-value { font-size: 14px; }
+            .controls button { padding: 8px 12px; font-size: 12px; }
+            h1 { font-size: 22px; }
+            .pool-area { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Màn hình Bắt Đầu -->
+    <div id="welcomeScreen" class="welcome-overlay">
+        <div class="welcome-modal">
+            <h1 style="font-size: 26px; text-shadow: none;">DOMINO SINH HỌC 11</h1>
+            <h2 style="margin-bottom: 25px;">QUANG HỢP Ở THỰC VẬT</h2>
+            
+            <div class="form-group" style="text-align: left;">
+                <label for="studentName">Họ và tên học sinh:</label>
+                <input type="text" id="studentName" placeholder="Nhập họ và tên..." required>
+            </div>
+            
+            <div class="form-group" style="text-align: left;">
+                <label for="studentClass">Lớp:</label>
+                <input type="text" id="studentClass" placeholder="Ví dụ: 11A1" required>
+            </div>
+            
+            <button class="btn-success" style="width: 100%; justify-content: center; padding: 15px; font-size: 18px; margin-top: 15px; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);" onclick="beginGame()">🚀 BẮT ĐẦU VÀO CHƠI</button>
+        </div>
+    </div>
+
+    <header>
+        <h1 id="gameMainTitle">DOMINO SINH HỌC 11</h1>
+        <h2 id="gameSubTitle">QUANG HỢP Ở THỰC VẬT</h2>
+        <div class="stats-container">
+            <div class="stat-item">⭐ Điểm: <span id="scoreDisplay" class="stat-value">0</span></div>
+            <div class="stat-item">⏱ Thời gian: <span id="timeDisplay" class="stat-value">00:00</span></div>
+            <div class="stat-item">🔗 Đã nối: <span id="progressDisplay" class="stat-value">0/0</span></div>
+            <div class="stat-item" style="color: var(--danger);">❌ Sai: <span id="mistakeDisplay" class="stat-value">0</span></div>
+            <div class="stat-item" style="color: var(--warning);">🏆 Điểm cao: <span id="highScoreDisplay" class="stat-value">0</span></div>
+        </div>
+    </header>
+
+    <div class="controls">
+        <button class="btn-info" onclick="openLeaderboard()">🏆 Bảng xếp hạng</button>
+        <button class="btn-success" onclick="startGame()">🔄 Làm lại</button>
+        <button class="btn-warning" onclick="useHint()">💡 Gợi ý (-1đ)</button>
+        <button id="soundBtn" onclick="toggleSound()">🔊 Tắt âm</button>
+    </div>
+
+    <main>
+        <div>
+            <div class="area-title">
+                <span>Chuỗi Domino đã nối</span>
+                <span id="chainInstruction" style="font-size: 12px; text-transform: none; color: var(--accent);"></span>
+            </div>
+            <div class="chain-area" id="chainArea">
+                <!-- Thẻ đã nối hiện ở đây -->
+            </div>
+        </div>
+
+        <div>
+            <div class="area-title">Kho thẻ (Bấm chọn thẻ đúng để nối tiếp)</div>
+            <div class="pool-area" id="poolArea">
+                <!-- Thẻ để chọn hiện ở đây -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Thông báo</div>
+
+    <!-- Removed: Modal Nhập Dữ Liệu -->
+
+    <!-- Modal Kết Thúc -->
+    <div id="endModal" class="modal-overlay">
+        <div class="modal">
+            <h3>🎉 HOÀN THÀNH XUẤT SẮC 🎉</h3>
+            <div class="end-stats">
+                <p>Tổng điểm: <span id="endScore">0</span></p>
+                <p>Thời gian: <span id="endTime">00:00</span></p>
+                <p>Số lần chọn sai: <span id="endMistakes" style="color: var(--danger);">0</span></p>
+            </div>
+            
+            <div style="text-align: center; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                <button class="btn-info" style="padding: 12px 20px; font-size: 16px;" onclick="saveToLeaderboard()">Lưu Thành Tích</button>
+                <button class="btn-success" style="padding: 12px 20px; font-size: 16px;" onclick="closeModal('endModal'); startGame();">Chơi Lại</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Bảng Xếp Hạng -->
+    <div id="leaderboardModal" class="modal-overlay">
+        <div class="modal">
+            <h3>🏆 TOP 10 XUẤT SẮC 🏆</h3>
+            <div style="max-height: 350px; overflow-y: auto; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align: center; width: 60px;">Hạng</th>
+                            <th>Tên người chơi</th>
+                            <th>Lớp</th>
+                            <th>Điểm</th>
+                            <th>Thời gian</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <!-- Dữ liệu bảng xếp hạng sẽ được nạp vào đây -->
+                    </tbody>
+                </table>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn-danger" style="padding: 10px 30px;" onclick="closeModal('leaderboardModal')">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CẤU HÌNH & DỮ LIỆU MẶC ĐỊNH ---
+        const defaultData = {
+            mainTitle: "DOMINO SINH HỌC 11",
+            subTitle: "QUANG HỢP Ở THỰC VẬT",
+            cardsText: `BẮT ĐẦU - Bào quan thực hiện chức năng quang hợp ở thực vật là gì?
+Lục lạp - Sắc tố nào trực tiếp tham gia chuyển hóa năng lượng ánh sáng thành ATP và NADPH?
+Diệp lục a - Pha sáng của quá trình quang hợp diễn ra ở vị trí nào trong lục lạp?
+Màng Thylakoid - Sản phẩm của pha sáng cung cấp làm nguyên liệu cho pha tối gồm những gì?
+ATP và NADPH - Pha tối (chu trình Calvin) của quang hợp diễn ra ở vị trí nào?
+Chất nền (Stroma) của lục lạp - Khí O2 sinh ra trong quá trình quang hợp có nguồn gốc từ đâu?
+Quá trình quang phân li nước - Mía, ngô, cỏ lồng vực, cỏ gấu thuộc nhóm thực vật nào?
+Thực vật C4 - Hợp chất hữu cơ ổn định đầu tiên được tạo ra trong chu trình Calvin (C3) là gì?
+Hợp chất 3 cacbon (3-PGA / APG) - Đặc điểm thích nghi của thực vật C4?
+Có thêm chu trình C4 - Sản phẩm của pha tối sẽ quay trở lại pha sáng?
+NADP+ và ADP - KẾT THÚC`
+        };
+
+        const STORAGE_KEY_DATA = 'domino_lesson_data_sinhhoc'; // Changed storage key
+        const STORAGE_KEY_HIGHSCORE = 'domino_highscore_sinh';
+        const STORAGE_KEY_LEADERBOARD = 'domino_leaderboard_sinh'; // Key cho bảng xếp hạng
+
+        // --- BIẾN TRẠNG THÁI TRÒ CHƠI ---
+        let lessonData = {};
+        let allCards = [];
+        let poolCards = [];
+        let chainCards = [];
+        
+        let currentPlayerName = '';
+        let currentPlayerClass = '';
+
+        let score = 0;
+        let mistakes = 0;
+        let seconds = 0;
+        let timerInterval = null;
+        let isGameActive = false;
+        let isProcessing = false;
+        let soundEnabled = true;
+        let highScore = parseInt(localStorage.getItem(STORAGE_KEY_HIGHSCORE)) || 0;
+        let leaderboardData = JSON.parse(localStorage.getItem(STORAGE_KEY_LEADERBOARD)) || []; // Dữ liệu bảng xếp hạng
+
+        // --- ÂM THANH (WEB AUDIO API) ---
+        let audioCtx;
+        function initAudio() {
+            if (!soundEnabled) return;
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function playTone(freq, type, duration, vol = 0.1) {
+            if (!soundEnabled) return;
+            initAudio();
+            try {
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.type = type;
+                oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                
+                gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + duration);
+            } catch(e) { console.log("Audio play error", e); }
+        }
+
+        function playSuccess() {
+            playTone(600, 'sine', 0.1, 0.1);
+            setTimeout(() => playTone(800, 'sine', 0.15, 0.1), 100);
+        }
+
+        function playError() {
+            playTone(300, 'square', 0.2, 0.05);
+            setTimeout(() => playTone(250, 'square', 0.2, 0.05), 150);
+        }
+        
+        function playWin() {
+            let note = 400;
+            for(let i=0; i<5; i++) {
+                setTimeout(() => playTone(note + (i*100), 'sine', 0.15, 0.1), i * 150);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('soundBtn');
+            if (soundEnabled) {
+                btn.innerHTML = '🔊 Tắt âm';
+                initAudio();
+            } else {
+                btn.innerHTML = '🔇 Bật âm';
+            }
+        }
+
+        // --- TIỆN ÍCH ---
+        function formatTime(sec) {
+            const m = Math.floor(sec / 60).toString().padStart(2, '0');
+            const s = (sec % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            toast.textContent = (type === 'success' ? '✅ ' : '❌ ') + message;
+            toast.className = `toast toast-${type} show`;
+            setTimeout(() => { toast.classList.remove('show'); }, 2000);
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // --- XỬ LÝ DỮ LIỆU ---
+        function loadSavedData() {
+            // Since we removed the edit mode, we just load defaultData directly
+            lessonData = {...defaultData};
+            document.getElementById('highScoreDisplay').innerText = highScore;
+        }
+
+        function parseCardsText(text) {
+            const lines = text.split('\n').filter(line => line.trim() !== '');
+            const cards = [];
+            
+            for (let i = 0; i < lines.length; i++) {
+                // Tách dựa vào chuỗi " - " (có khoảng trắng 2 bên hoặc không)
+                const parts = lines[i].split(/\s+-\s+|-(?=\s)|(?<=\s)-/); 
+                
+                // Fallback nếu không tách được đúng chuẩn
+                let left = "", right = "";
+                if(parts.length >= 2) {
+                    left = parts[0].trim();
+                    right = parts.slice(1).join(" - ").trim(); // Gộp lại nếu có nhiều dấu -
+                } else if (lines[i].includes('-')) {
+                    const idx = lines[i].indexOf('-');
+                    left = lines[i].substring(0, idx).trim();
+                    right = lines[i].substring(idx + 1).trim();
+                } else {
+                    throw new Error(`Dòng ${i+1} thiếu dấu gạch ngang " - " để phân cách.`);
+                }
+
+                if (i === 0 && left.toUpperCase() !== "BẮT ĐẦU") {
+                    throw new Error(`Vế trái của thẻ đầu tiên phải là "BẮT ĐẦU". Hiện tại là "${left}"`);
+                }
+                if (i === lines.length - 1 && right.toUpperCase() !== "KẾT THÚC") {
+                    throw new Error(`Vế phải của thẻ cuối cùng phải là "KẾT THÚC". Hiện tại là "${right}"`);
+                }
+
+                cards.push({
+                    originalIndex: i,
+                    left: left,
+                    right: right,
+                    colorClass: `color-${i % 5}`
+                });
+            }
+            return cards;
+        }
+
+        function updateHeaders() {
+            document.getElementById('gameMainTitle').innerText = lessonData.mainTitle;
+            document.getElementById('gameSubTitle').innerText = lessonData.subTitle;
+        }
+
+        function updateStats() {
+            document.getElementById('scoreDisplay').innerText = score;
+            document.getElementById('timeDisplay').innerText = formatTime(seconds);
+            document.getElementById('mistakeDisplay').innerText = mistakes;
+            document.getElementById('progressDisplay').innerText = `${chainCards.length}/${allCards.length}`;
+            
+            if(score > highScore) {
+                highScore = score;
+                localStorage.setItem(STORAGE_KEY_HIGHSCORE, highScore);
+                document.getElementById('highScoreDisplay').innerText = highScore;
+            }
+        }
+
+        // --- KHỞI TẠO TRÒ CHƠI ---
+        function beginGame() {
+            const nameInput = document.getElementById('studentName').value.trim();
+            const classInput = document.getElementById('studentClass').value.trim();
+
+            if (!nameInput || !classInput) {
+                showToast("Vui lòng nhập đầy đủ họ tên và lớp!", "error");
+                return;
+            }
+
+            currentPlayerName = nameInput;
+            currentPlayerClass = classInput;
+
+            document.getElementById('welcomeScreen').style.display = 'none';
+            initAudio(); // Initialize audio from user interaction
+            startGame();
+        }
+
+        function startGame() {
+            try {
+                allCards = parseCardsText(lessonData.cardsText);
+            } catch(e) {
+                showToast("Lỗi dữ liệu: " + e.message, "error");
+                return;
+            }
+
+            updateHeaders();
+            
+            // Reset Stats
+            score = 0;
+            mistakes = 0;
+            seconds = 0;
+            chainCards = [];
+            poolCards = [...allCards];
+            isGameActive = true;
+            isProcessing = false;
+            
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                seconds++;
+                document.getElementById('timeDisplay').innerText = formatTime(seconds);
+            }, 1000);
+
+            // Bỏ thẻ đầu tiên vào chuỗi
+            const firstCard = poolCards.shift();
+            chainCards.push(firstCard);
+
+            // Xáo trộn kho thẻ
+            shuffleArray(poolCards);
+
+            renderGame();
+            updateStats();
+        }
+
+        function renderGame() {
+            const chainContainer = document.getElementById('chainArea');
+            const poolContainer = document.getElementById('poolArea');
+            
+            chainContainer.innerHTML = '';
+            poolContainer.innerHTML = '';
+
+            // Hướng dẫn nhỏ
+            const lastChainCard = chainCards[chainCards.length - 1];
+            if(lastChainCard.right !== "KẾT THÚC") {
+                document.getElementById('chainInstruction').innerText = `👉 Hãy tìm thẻ có vế trái trả lời cho: "${lastChainCard.right}"`;
+            } else {
+                document.getElementById('chainInstruction').innerText = `🎉 Hoàn thành!`;
+            }
+
+            chainCards.forEach(card => {
+                chainContainer.appendChild(createCardElement(card, true));
+            });
+
+            poolCards.forEach(card => {
+                poolContainer.appendChild(createCardElement(card, false));
+            });
+            
+            // Cuộn xuống thẻ cuối của chuỗi
+            chainContainer.scrollTop = chainContainer.scrollHeight;
+        }
+
+        function createCardElement(card, isChain) {
+            const div = document.createElement('div');
+            div.className = `domino ${card.colorClass}`;
+            div.id = `card-${card.originalIndex}`;
+            
+            div.innerHTML = `
+                <div class="domino-half">${card.left}</div>
+                <div class="domino-divider"></div>
+                <div class="domino-half">${card.right}</div>
+            `;
+
+            if (!isChain) {
+                div.onclick = () => handleCardClick(card, div);
+            }
+
+            return div;
+        }
+
+        // --- XỬ LÝ LOGIC CHƠI ---
+        function handleCardClick(clickedCard, cardElement) {
+            if (!isGameActive || isProcessing) return;
+            isProcessing = true;
+            initAudio();
+
+            const lastChainCard = chainCards[chainCards.length - 1];
+            
+            // Logic Nối: Thẻ được chọn phải là thẻ NGAY SAU thẻ cuối cùng trong chuỗi dữ liệu gốc
+            const isCorrect = (clickedCard.originalIndex === lastChainCard.originalIndex + 1);
+
+            if (isCorrect) {
+                // ĐÚNG
+                playSuccess();
+                showToast("Chính xác! Tiếp tục nhé!", "success");
+                score += 10;
+                
+                // Di chuyển thẻ
+                poolCards = poolCards.filter(c => c.originalIndex !== clickedCard.originalIndex);
+                chainCards.push(clickedCard);
+                
+                renderGame();
+                updateStats();
+                
+                checkWinCondition();
+            } else {
+                // SAI
+                playError();
+                showToast("Chưa đúng, hãy suy nghĩ lại!", "error");
+                score = Math.max(0, score - 1); // Trừ 1 điểm khi sai
+                mistakes++;
+                
+                // Hiệu ứng rung
+                cardElement.classList.add('shake');
+                setTimeout(() => {
+                    cardElement.classList.remove('shake');
+                }, 400);
+                
+                updateStats();
+            }
+            
+            // Hủy block click sau 0.5s để mượt
+            setTimeout(() => { isProcessing = false; }, 400);
+        }
+
+        function useHint() {
+            if (!isGameActive || poolCards.length === 0) return;
+            initAudio();
+            
+            if (score < 1) { // Kiểm tra còn ít nhất 1 điểm
+                showToast("Không đủ điểm để dùng gợi ý!", "error");
+                return;
+            }
+            
+            const lastChainCard = chainCards[chainCards.length - 1];
+            const targetIndex = lastChainCard.originalIndex + 1;
+            const targetElement = document.getElementById(`card-${targetIndex}`);
+            
+            if (targetElement) {
+                score = Math.max(0, score - 1); // Trừ 1 điểm khi dùng gợi ý
+                updateStats();
+                
+                targetElement.classList.add('hint-pulse');
+                setTimeout(() => {
+                    targetElement.classList.remove('hint-pulse');
+                }, 2000);
+            }
+        }
+
+        function checkWinCondition() {
+            if (poolCards.length === 0) {
+                isGameActive = false;
+                clearInterval(timerInterval);
+                playWin();
+                
+                setTimeout(() => {
+                    document.getElementById('endScore').innerText = score;
+                    document.getElementById('endTime').innerText = formatTime(seconds);
+                    document.getElementById('endMistakes').innerText = mistakes;
+                    document.getElementById('endModal').classList.add('active');
+                }, 800);
+            }
+        }
+
+        // --- QUẢN LÝ MODAL & DỮ LIỆU ---
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        async function saveToLeaderboard() {
+            const saveBtn = document.querySelector('#endModal .btn-info');
+            if (saveBtn) {
+                saveBtn.disabled = true;
+                saveBtn.innerText = "Đang gửi dữ liệu...";
+            }
+
+            const record = {
+                name: currentPlayerName,
+                className: currentPlayerClass,
+                score: score,
+                time: formatTime(seconds), // Chuyển thời gian thành chuỗi mm:ss cho Sheet
+                date: new Date().toLocaleDateString('vi-VN')
+            };
+
+            // Đường link Web App Google Apps Script của bạn
+            const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbze7zmEfm6Z4AfG0jdlvz9bNmlGRG1gmfSpoEwoy1Xh5_Zwc6JOnW-5OqH663y1Sy86/exec';
+            
+            if (WEB_APP_URL && WEB_APP_URL !== 'THAY_BANG_URL_WEB_APP_CUA_BAN') {
+                try {
+                    await fetch(WEB_APP_URL, {
+                        method: 'POST',
+                        mode: 'no-cors', // BẮT BUỘC: để tránh bị chặn CORS từ phía Google
+                        headers: {
+                            'Content-Type': 'text/plain;charset=utf-8',
+                        },
+                        body: JSON.stringify(record)
+                    });
+                } catch(e) {
+                    console.error('Lỗi khi lưu lên Google Sheets: ', e);
+                }
+            }
+            
+            // Khôi phục lại time gốc (giây) để máy sắp xếp chính xác
+            const localRecord = {...record, time: seconds}; 
+            leaderboardData.push(localRecord);
+            
+            // Sắp xếp: Điểm giảm dần -> Thời gian tăng dần
+            leaderboardData.sort((a, b) => {
+                if (b.score !== a.score) return b.score - a.score;
+                return a.time - b.time;
+            });
+            
+            leaderboardData = leaderboardData.slice(0, 10);
+            localStorage.setItem(STORAGE_KEY_LEADERBOARD, JSON.stringify(leaderboardData));
+            
+            if (saveBtn) {
+                saveBtn.disabled = false;
+                saveBtn.innerText = "Lưu Thành Tích";
+            }
+            
+            showToast("Tuyệt vời! Đã ghi danh thành công.", "success");
+            closeModal('endModal');
+            openLeaderboard();
+        }
+
+        function openLeaderboard() {
+            const tbody = document.getElementById('leaderboardBody');
+            tbody.innerHTML = '';
+            
+            if (leaderboardData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 25px; color: var(--text-muted);">Chưa có thành tích nào. Hãy là người đầu tiên phá đảo!</td></tr>';
+            } else {
+                leaderboardData.forEach((record, index) => {
+                    const tr = document.createElement('tr');
+                    
+                    // Gắn huy chương cho Top 3
+                    let rankDisplay = index + 1;
+                    if (index === 0) rankDisplay = '<span style="font-size: 20px;">🥇</span>';
+                    else if (index === 1) rankDisplay = '<span style="font-size: 20px;">🥈</span>';
+                    else if (index === 2) rankDisplay = '<span style="font-size: 20px;">🥉</span>';
+
+                    tr.innerHTML = `
+                        <td style="text-align: center; font-weight: bold;">${rankDisplay}</td>
+                        <td style="font-weight: 500;">${record.name}</td>
+                        <td style="color: var(--accent); font-weight: 500;">${record.className || '-'}</td>
+                        <td style="color: var(--success); font-weight: 800; font-size: 16px;">${record.score}</td>
+                        <td style="color: var(--text-muted);">${formatTime(record.time)}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+            
+            document.getElementById('leaderboardModal').classList.add('active');
+        }
+
+        // --- KHỞI CHẠY ---
+        window.onload = () => {
+            loadSavedData();
+            // Không tự động bắt đầu, chờ người chơi nhập thông tin ở màn hình welcome
+        };
+
+    </script>
+</body>
+</html>
